@@ -38,20 +38,31 @@ abcad
 abcd
 
 a
+ *
+ * 基本思路
+ * abcad
+ * abcadabcabcad
+ * abcad abcab[d] 错误，所以重新从头开始，仅提前了a一个
+ * abcad abc abcad
+ *
+ * abcabd
+ * ab abcabd abcababcabd
+ * ab abcabd abcaba[d] 错误，所以重新从头开始，注意这个地方是提前了ab两个
+ * ab abcabd abc ab abcabd
  */
 
 function solution($line) {
-    $k = $line[0];
-    $f = $line[0];//第一个字符
+    $k = $line[0];//第一个字符
+    $f = $line[0];//源字符
     $line = trim($line, $f);//清除首尾重复的第一个字符
     if(empty($line)) {
-        return $f;
+        return $f;//aaaaaaaaaa 直接返回a
     }
 
     $t  = '';
-    $j  = 0;//原字符串位置
+    $j  = 0;//源字符串位置
     $tk = '';
-    $jl = 1;//原字符串长度
+    $jl = 1;//源字符串长度
     $l  = strlen($line);
     $tj = 0;
 
@@ -62,7 +73,7 @@ function solution($line) {
         while(true) {
             $s = $f[$j];
             if($s != $d) {
-                if($j!=$jl && $flag && ($d==$k || (!empty($line[$i-1]) && $line[$i-1] == $tk))) {
+                if($j!=$jl && $flag && ($d==$k || (!empty($line[$i-1]) && $line[$i-1] == $tk))) {//顺序不能继续，重新从最近的开始字母算起
                     if($d==$k) {
                         $j = 0;
                     } else {
@@ -74,7 +85,7 @@ function solution($line) {
                     continue;
                 }
 
-                $f = $f . $t . $d;
+                $f = $f . $t . $d;//注意$t是中间的值，需要保留
                 $t = '';
                 $j = 0;
                 $jl = strlen($f);
@@ -93,24 +104,19 @@ function solution($line) {
                     }
                 }
                 if($d == $k) {
-                    $tj = 1;
-                    $tk = $d;
+                    $tj = 1;//记录从头开始的位置
+                    $tk = $d;//记录从头循环的字母
                 }
                 //echo "tk=".$tk."\n";
                 $j++;
                 if ($j == $jl) {
-                    $t = '';
+                    $t = '';//注意清空，因为之前的都是可循环到的，不需要
                     $j = 0;
                     $tj = 0;
                     $tk = '';
                 }
             }
             break;
-        }
-        if($i == 900) {
-            //echo $line[$i]."\n";
-
-            //echo $f;exit;
         }
     }
 
